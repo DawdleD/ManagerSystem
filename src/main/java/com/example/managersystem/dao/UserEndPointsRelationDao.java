@@ -3,7 +3,6 @@ package com.example.managersystem.dao;
 import com.example.managersystem.model.UserEndPointsRelationEntity;
 import com.example.managersystem.util.JsonUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -27,8 +26,6 @@ public class UserEndPointsRelationDao {
 
     @Value("${user.endpoints.data.file.path}")
     String dataFilePath;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // single-point server, use ReentrantLock
     private final Lock lock = new ReentrantLock();

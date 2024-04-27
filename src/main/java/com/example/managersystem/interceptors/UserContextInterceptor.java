@@ -1,7 +1,8 @@
 package com.example.managersystem.interceptors;
 
 import com.example.managersystem.context.UserContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.managersystem.util.JsonUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Base64;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,8 +31,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
         if (userContextHeader != null) {
             try {
                 userContextHeader = new String(Base64.getDecoder().decode(userContextHeader));
-                ObjectMapper objectMapper = new ObjectMapper();
-                UserContext userContext = objectMapper.readValue(userContextHeader, UserContext.class);
+                UserContext userContext = JsonUtil.fromJson(userContextHeader, new TypeReference<UserContext>() {});
                 request.setAttribute("userContext", userContext);
             } catch (Exception e) {
                 log.error("UserContextInterceptor error, userContextHeader={}", userContextHeader, e);
