@@ -52,16 +52,13 @@ public class UserContextInterceptorMockTest {
      */
     @Test
     public void testPreHandleWithValidUserContext() throws Exception {
-        // arrange
         UserContext userContext = new UserContext(); // 假设这是有效的用户上下文
         String userContextJson = new ObjectMapper().writeValueAsString(userContext);
         String encodedUserContext = Base64.getEncoder().encodeToString(userContextJson.getBytes());
         when(request.getHeader(header)).thenReturn(encodedUserContext);
 
-        // act
         boolean result = userContextInterceptor.preHandle(request, response, null);
 
-        // assert
         assertTrue(result);
     }
 
@@ -70,10 +67,8 @@ public class UserContextInterceptorMockTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testPreHandleWithMissingUserContext() throws Exception {
-        // arrange
         when(request.getHeader(header)).thenReturn(null);
 
-        // act
         userContextInterceptor.preHandle(request, response, null);
 
     }
@@ -83,11 +78,9 @@ public class UserContextInterceptorMockTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testPreHandleWithInvalidUserContext() throws Exception {
-        // arrange
         String invalidUserContext = "invalid";
         when(request.getHeader(header)).thenReturn(invalidUserContext);
 
-        // act
         userContextInterceptor.preHandle(request, response, null);
 
     }

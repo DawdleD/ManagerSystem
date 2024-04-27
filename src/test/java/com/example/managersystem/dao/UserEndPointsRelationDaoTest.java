@@ -44,13 +44,13 @@ public class UserEndPointsRelationDaoTest {
      */
     @Test
     public void testFindByUserIdWhenUserDoesNotExist() {
-        // arrange
+
         long userId = 1L;
 
-        // act
+
         Optional<UserEndPointsRelationEntity> result = userEndPointsRelationDao.findByUserId(userId);
 
-        // assert
+
         assertFalse(result.isPresent());
     }
 
@@ -59,17 +59,17 @@ public class UserEndPointsRelationDaoTest {
      */
     @Test
     public void testUpdateAddNewUser() throws IOException {
-        // arrange
+
         long userId = 1L;
         UserEndPointsRelationEntity entity = new UserEndPointsRelationEntity();
         entity.setUserId(userId);
         entity.setEndPoints(Lists.newArrayList("1", "2"));
 
-        // act
+
         userEndPointsRelationDao.update(entity);
         Optional<UserEndPointsRelationEntity> queryRes = userEndPointsRelationDao.findByUserId(userId);
 
-        // assert
+
         ObjectMapper objectMapper = new ObjectMapper();
         Map<Long, UserEndPointsRelationEntity> dataMap = objectMapper.readValue(new File(tempDataFilePath), new TypeReference<Map<Long, UserEndPointsRelationEntity>>() {});
         assertTrue(dataMap.containsKey(userId));
