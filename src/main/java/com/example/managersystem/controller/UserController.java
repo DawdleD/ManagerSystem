@@ -8,10 +8,12 @@ import com.example.managersystem.dto.UserEndPointsInfoDTO;
 import com.example.managersystem.enums.ResponseCodeEnum;
 import com.example.managersystem.enums.UserRoleEnum;
 import com.example.managersystem.manage.UserEndPointsManager;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,11 +52,15 @@ public class UserController {
         try {
             if (userId > 0) {
                 Optional<UserEndPointsInfoDTO> userRight = (userEndPointsManager.getUserEndPointsInfo(userId));
-                if (userRight.isPresent() && userRight.get().getEndPoints().contains(resource)) {
-                    ResourceVisitResponseDTO responseDTO = new ResourceVisitResponseDTO();
-                    responseDTO.setMessage(VISIT_PERMITTED_MSG);
-                    log.info("getResourceByUserId permitted, userid={}, resource={}", userId, resource);
-                    return CommonResponse.buildSuccessRespWithData(responseDTO);
+                if (userRight.isPresent()) {
+                    List<String> endPoints = userRight.get().getEndPoints();
+                    log.info("userId {} existed endPoints= {}", userId, endPoints);
+                    if (!CollectionUtils.isEmpty(endPoints) && endPoints.contains(resource)) {
+                        ResourceVisitResponseDTO responseDTO = new ResourceVisitResponseDTO();
+                        responseDTO.setMessage(VISIT_PERMITTED_MSG);
+                        log.info("getResourceByUserId permitted, userid={}, resource={}", userId, resource);
+                        return CommonResponse.buildSuccessRespWithData(responseDTO);
+                    }
                 }
             }
             log.info("getResourceByUserId denied, userid={}, resource={}", userId, resource);
