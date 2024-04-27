@@ -48,7 +48,7 @@ public class UserController {
     @PermissionCheck({UserRoleEnum.ADMIN, UserRoleEnum.USER})
     public CommonResponse<ResourceVisitResponseDTO> getResourceByUserId(@Validated @NotNull @PathVariable("resource") String resource, @RequestAttribute("userContext") UserContext userContext) {
         log.info("getResourceByUserId called for resource {}, context={}", resource, userContext);
-        long userId = userContext.getUserId();
+        long userId = Optional.ofNullable(userContext.getUserId()).orElse(0L);
         try {
             if (userId > 0) {
                 Optional<UserEndPointsInfoDTO> userRight = (userEndPointsManager.getUserEndPointsInfo(userId));
