@@ -3,6 +3,7 @@ package com.example.managersystem.interceptors;
 import com.example.managersystem.context.UserContext;
 import com.example.managersystem.enums.UserRoleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -17,6 +18,10 @@ import java.util.Base64;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 
@@ -52,14 +57,16 @@ public class UserContextInterceptorMockTest {
      */
     @Test
     public void testPreHandleWithValidUserContext() throws Exception {
-        UserContext userContext = new UserContext(); // 假设这是有效的用户上下文
-        String userContextJson = new ObjectMapper().writeValueAsString(userContext);
+        String userContextJson = new ObjectMapper().writeValueAsString(mockUserContext);
         String encodedUserContext = Base64.getEncoder().encodeToString(userContextJson.getBytes());
         when(request.getHeader(header)).thenReturn(encodedUserContext);
 
         boolean result = userContextInterceptor.preHandle(request, response, null);
 
         assertTrue(result);
+        verify(request, times(1)).setAttribute(anyString(), argThat(
+                sentUserContext -> Objects.equals(((UserContext) sentUserContext).getUserId(), mockUserContext.getUserId())
+        ));
     }
 
     /**
